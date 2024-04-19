@@ -319,7 +319,8 @@ result_t can::transmit(embot::hw::CAN p)
     } 
     
     // TODO: Temporary workaround in order validate this feature without affecting the other CAN baords
-#ifdef STM32HAL_BOARD_AMC
+#if defined(STM32HAL_BOARD_AMC) | defined(STM32HAL_BOARD_AMC2CM4)
+    #warning see how to make this option more general and not only dependent of boards amc or amc2cm4
     if(true == tx_IRQisEnabled(p))
     {
         // marco.accame on 17 aug 2022: if the TX is already ongoing, we dont want to start it again
@@ -428,7 +429,8 @@ static void can::s_tx_start(embot::hw::CAN p)
     volatile bool isTXenabled = tx_IRQdisable(p);
            
     // TODO: Temporary workaround in order validate this feature without affecting the other CAN baords
-#ifdef STM32HAL_BOARD_AMC
+#if defined(STM32HAL_BOARD_AMC) | defined(STM32HAL_BOARD_AMC2CM4)
+    #warning see how to make this option more general and not only dependent of boards amc or amc2cm4
     if(true == isTXenabled)
     {
         //static volatile uint32_t inhere {0};

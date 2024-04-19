@@ -30,11 +30,7 @@
     #include "stm32hal.h"
 #else
     #warning this implementation is only for stm32hal
-#endif
-
-#if defined(STM32HAL_BOARD_AMC2C)
-    #include "motorhal.h"    
-#endif    
+#endif   
   
 
 using namespace embot::hw;
@@ -90,10 +86,11 @@ namespace embot { namespace hw { namespace motor {
 }}} // namespace embot { namespace hw { namespace MOTOR {
 
 
-#else
+#elif defined(EMBOT_ENABLE_hw_motor)
 
-
-
+#if defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7)   
+    #include "motorhal.h"  
+#endif
 
 namespace embot { namespace hw { namespace motor {
 
@@ -401,10 +398,10 @@ namespace embot { namespace hw { namespace motor {
     }
     
 // in here is the part for low level hw of the boards (amc2c or amcbldc)
+      
     
-#if defined(STM32HAL_BOARD_AMC2C)
-
-
+#if defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7)
+    
     result_t s_hw_init(MOTOR h)
     {
         // i want to be sure that the pwm is not active       
@@ -712,7 +709,7 @@ namespace embot { namespace hw { namespace motor {
 
 
 
-#endif //defined(EMBOT_MOTOR_ENABLED)
+#endif // #elif defined(EMBOT_ENABLE_hw_motor)
  
 
 

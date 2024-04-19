@@ -318,7 +318,7 @@ void hal_error_handler()
 #if defined(STM32HAL_STM32L4) && (STM32HAL_DRIVER_VERSION >= 0x190)
     Error_Handler();
 #elif defined(STM32HAL_STM32H7)
-    Error_Handler();
+    for(;;); // Error_Handler();
 #endif
 }
  
