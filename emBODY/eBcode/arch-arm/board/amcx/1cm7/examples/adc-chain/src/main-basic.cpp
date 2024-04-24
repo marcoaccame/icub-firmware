@@ -26,6 +26,8 @@
 
 #include <vector>
 
+#include "embot_hw_motor.h"
+
 
 constexpr embot::os::Event evtTick = embot::core::binary::mask::pos2mask<embot::os::Event>(0);
 
@@ -35,6 +37,23 @@ embot::app::scope::Signal *signal {nullptr};
 constexpr embot::core::relTime tickperiod = 1000*embot::core::time1millisec;
 
 void ON(){};
+    
+    
+embot::hw::motor::Currents currs {};
+    
+void onCurrents_FOC_innerloop(void *owner, const embot::hw::motor::Currents * const currents)
+{
+    embot::os::Thread *t = reinterpret_cast<embot::os::Thread*>(owner);
+    
+    if((nullptr == t) || (nullptr == currents))
+    {
+        return;
+    }    
+        
+    // 1. copy currents straight away, so that we can use them
+    currs = *currents;    
+}
+
 
 void eventbasedthread_startup(embot::os::Thread *t, void *param)
 {   
@@ -54,6 +73,9 @@ void eventbasedthread_startup(embot::os::Thread *t, void *param)
     embot::os::Action act(embot::os::EventToThread(evtTick, t));
     embot::os::Timer::Config cfg{tickperiod, act, embot::os::Timer::Mode::forever, 0};
     tmr->start(cfg);
+    
+    embot::hw::motor::init(embot::hw::MOTOR::one, {});
+    embot::hw::motor::setCallbackOnCurrents(embot::hw::MOTOR::one, onCurrents_FOC_innerloop, t);
 
 }
 

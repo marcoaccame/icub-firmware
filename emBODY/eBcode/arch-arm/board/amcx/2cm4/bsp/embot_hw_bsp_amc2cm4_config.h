@@ -17,7 +17,7 @@
 #include "stm32hal.h"
 
 
-#if   defined(STM32HAL_BOARD_AMC2CM4)
+#if defined(STM32HAL_BOARD_AMC2CM4)
 
 
     #define EMBOT_REDEFINE_hw_bsp_DRIVER_init    
@@ -35,12 +35,14 @@
     #define EMBOT_ENABLE_hw_eth
     #define EMBOT_ENABLE_hw_timer
     
+    #define EMBOT_ENABLE_hw_motor
+    
 //    #define EMBOT_ENABLE_hw_testpoint
 //    #define EMBOT_ENABLE_hw_button
 //    
 //    #define EMBOT_ENABLE_hw_motor
 //    #define EMBOT_ENABLE_hw_flash
-    #define EMBOT_ENABLE_hw_timer
+//    #define EMBOT_ENABLE_hw_timer
 //    #define EMBOT_ENABLE_hw_can
 //    
     #define EMBOT_ENABLE_hw_mtx

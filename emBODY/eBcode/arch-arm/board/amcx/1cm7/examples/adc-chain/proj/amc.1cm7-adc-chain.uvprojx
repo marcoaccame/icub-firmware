@@ -716,6 +716,66 @@
             </File>
           </Files>
         </Group>
+        <Group>
+          <GroupName>embot::hw::motor</GroupName>
+          <Files>
+            <File>
+              <FileName>embot_hw_motor.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\..\..\..\embot\hw\embot_hw_motor.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>embot_hw_timer.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\..\..\..\embot\hw\embot_hw_timer.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>embot_hw_motor_bsp_amc1mc7.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\embot_hw_motor_bsp_amc1mc7.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>embot_hw_timer_bsp_amc1cm7.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\embot_hw_timer_bsp_amc1cm7.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>motorhal.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\motorhal.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>adcm.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\adcm.c</FilePath>
+            </File>
+            <File>
+              <FileName>enc.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\enc.c</FilePath>
+            </File>
+            <File>
+              <FileName>hall.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\hall.c</FilePath>
+            </File>
+            <File>
+              <FileName>motorhal_config.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\motorhal_config.c</FilePath>
+            </File>
+            <File>
+              <FileName>motorhal_faults.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\motorhal_faults.c</FilePath>
+            </File>
+            <File>
+              <FileName>pwm.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\pwm.c</FilePath>
+            </File>
+          </Files>
+        </Group>
       </Groups>
     </Target>
     <Target>
@@ -1052,7 +1112,7 @@
               <MiscControls>-Ddualcore_BOOT_cm4master -Wno-pragma-pack -Wno-deprecated-register -DEMBOT_USE_rtos_osal</MiscControls>
               <Define>USE_STM32HAL STM32HAL_BOARD_AMC1CM7 STM32HAL_DRIVER_V1A0</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\..\..\libs\lowlevel\stm32hal\api;..\..\..\..\..\..\libs\highlevel\abslayer\osal\api;..\..\..\..\..\..\..\..\..\..\icub-firmware-shared\embot\core;..\..\..\..\..\..\embot\hw;..\..\..\..\..\..\embot\os;..\..\..\..\..\..\embot\app;..\..\..\..\..\..\embot\app;..\..\..\..\..\..\libs\midware\eventviewer\api;..\..\..\bsp;..\..\..\..\..\..\..\..\..\..\icub-firmware-shared\embot\tools</IncludePath>
+              <IncludePath>..\..\..\..\..\..\libs\lowlevel\stm32hal\api;..\..\..\..\..\..\libs\highlevel\abslayer\osal\api;..\..\..\..\..\..\..\..\..\..\icub-firmware-shared\embot\core;..\..\..\..\..\..\embot\hw;..\..\..\..\..\..\embot\os;..\..\..\..\..\..\embot\app;..\..\..\..\..\..\embot\app;..\..\..\..\..\..\libs\midware\eventviewer\api;..\..\..\bsp;..\..\..\..\..\..\..\..\..\..\icub-firmware-shared\embot\tools;..\..\..\bsp\motorhal</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1425,6 +1485,66 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>embot::hw::motor</GroupName>
+          <Files>
+            <File>
+              <FileName>embot_hw_motor.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\..\..\..\embot\hw\embot_hw_motor.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>embot_hw_timer.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\..\..\..\embot\hw\embot_hw_timer.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>embot_hw_motor_bsp_amc1mc7.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\embot_hw_motor_bsp_amc1mc7.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>embot_hw_timer_bsp_amc1cm7.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\embot_hw_timer_bsp_amc1cm7.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>motorhal.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\motorhal.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>adcm.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\adcm.c</FilePath>
+            </File>
+            <File>
+              <FileName>enc.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\enc.c</FilePath>
+            </File>
+            <File>
+              <FileName>hall.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\hall.c</FilePath>
+            </File>
+            <File>
+              <FileName>motorhal_config.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\motorhal_config.c</FilePath>
+            </File>
+            <File>
+              <FileName>motorhal_faults.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\motorhal_faults.c</FilePath>
+            </File>
+            <File>
+              <FileName>pwm.c</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\bsp\motorhal\pwm.c</FilePath>
             </File>
           </Files>
         </Group>

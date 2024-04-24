@@ -105,6 +105,7 @@ namespace embot::hw::dualcore::bsp {
     
     void mySystemClock_Config(void);
     void icub_SystemClock_Config(void);
+    void PeriphCommonClock_Config(void);
     
     bool BSP::init() const
     {
@@ -115,6 +116,8 @@ namespace embot::hw::dualcore::bsp {
             HAL_Init();                    
 //            mySystemClock_Config();
             icub_SystemClock_Config();
+            PeriphCommonClock_Config();
+            SystemCoreClockUpdate();
         
         }
         else
@@ -161,6 +164,40 @@ namespace embot::hw::dualcore::bsp {
 namespace embot::hw::dualcore::bsp { 
 
     // from icubtech
+    
+    void PeriphCommonClock_Config(void)
+    {
+      RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+      /** Initializes the peripherals clock
+      */
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USB|RCC_PERIPHCLK_ADC
+                                  |RCC_PERIPHCLK_SPI3|RCC_PERIPHCLK_SPI2
+                                  |RCC_PERIPHCLK_SPI1;
+      PeriphClkInitStruct.PLL2.PLL2M = 5;
+      PeriphClkInitStruct.PLL2.PLL2N = 50;
+      PeriphClkInitStruct.PLL2.PLL2P = 5;
+      PeriphClkInitStruct.PLL2.PLL2Q = 5;
+      PeriphClkInitStruct.PLL2.PLL2R = 2;
+      PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_2;
+      PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+      PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+      PeriphClkInitStruct.PLL3.PLL3M = 25;
+      PeriphClkInitStruct.PLL3.PLL3N = 288;
+      PeriphClkInitStruct.PLL3.PLL3P = 2;
+      PeriphClkInitStruct.PLL3.PLL3Q = 6;
+      PeriphClkInitStruct.PLL3.PLL3R = 4;
+      PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_0;
+      PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
+      PeriphClkInitStruct.PLL3.PLL3FRACN = 0;
+      PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL2;
+      PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_PLL3;
+      PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL3;
+      if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+      {
+        for(;;); // Error_Handler();
+      }
+    }    
     
     void icub_SystemClock_Config(void)
     {

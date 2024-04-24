@@ -1456,7 +1456,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>6</Optim>
+            <Optim>5</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -1480,7 +1480,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>-Ddualcore_BOOT_cm4master -Wno-pragma-pack -Wno-deprecated-register -DEMBOT_USE_rtos_osal</MiscControls>
-              <Define>USE_STM32HAL STM32HAL_BOARD_AMC1CM7 STM32HAL_DRIVER_V1A0</Define>
+              <Define>USE_ICC_COMM USE_ICC_CAN_COMM USE_STM32HAL STM32HAL_BOARD_AMC1CM7 STM32HAL_DRIVER_V1A0</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\..\..\libs\lowlevel\stm32hal\api;..\..\..\..\..\..\libs\highlevel\abslayer\osal\api;..\..\..\..\..\..\..\..\..\..\icub-firmware-shared\embot\core;..\..\..\..\..\..\embot\hw;..\..\..\..\..\..\embot\os;..\..\..\..\..\..\embot\app;..\..\..\..\..\..\embot\app;..\..\..\..\..\..\libs\midware\eventviewer\api;..\..\..\bsp;..\..\..\..\..\..\..\..\..\..\icub-firmware-shared\embot\tools;..\..\..\bsp\motorhal;..\..\..\..\..\..\embot\app\bldc;..\..\..\..\..\..\embot\prot\can;..\..\..\..\..\..\embot\app\eth;..\..\..\..\..\..\..\..\..\..\icub-firmware-shared\can\canProtocolLib;..\src\app-board-amc1cm7;..\..\..\..\..\..\libs\highlevel\services\embenv\api;..\..\..\..\..\..\mbd\amcbldc\amc-bldc;..\..\..\..\..\..\mbd\amcbldc\sharedutils;..\..\..\..\..\..\mbd\amcbldc\can-decoder;..\..\..\..\..\..\mbd\amcbldc\can-encoder;..\..\..\..\..\..\mbd\amcbldc\supervisor-rx;..\..\..\..\..\..\mbd\amcbldc\supervisor-tx;..\..\..\..\..\..\mbd\amcbldc\control-outer;..\..\..\..\..\..\mbd\amcbldc\control-foc;..\..\..\..\..\..\mbd\amcbldc\filter-current;..\..\..\..\..\..\mbd\amcbldc\estimator;..\..\..\..\..\..\libs\lowlevel\cmsis\dsp\v160\Include</IncludePath>
             </VariousControls>

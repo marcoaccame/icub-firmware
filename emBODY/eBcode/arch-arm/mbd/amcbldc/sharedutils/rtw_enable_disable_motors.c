@@ -19,7 +19,7 @@
 
 
     
-#if defined(STM32HAL_BOARD_AMCBLDC) || defined(STM32HAL_BOARD_AMC2C)
+#if defined(STM32HAL_BOARD_AMCBLDC) || defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7) || defined(STM32HAL_BOARD_AMC2CM4)
 
 #ifndef __cplusplus
     #error this file must be compiled in C++ mode when deployed on the target
@@ -33,7 +33,7 @@
 
 void rtw_enableMotor()
 {
-#if defined(STM32HAL_BOARD_AMCBLDC) || defined(STM32HAL_BOARD_AMC2C)
+#if defined(STM32HAL_BOARD_AMCBLDC) || defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7) || defined(STM32HAL_BOARD_AMC2CM4)
     embot::hw::motor::enable(embot::hw::MOTOR::one, true);
 #else
     #warning: choose a STM32HAL_BOARD_*    
@@ -42,7 +42,7 @@ void rtw_enableMotor()
 
 void rtw_disableMotor()
 {
-#if defined(STM32HAL_BOARD_AMCBLDC) || defined(STM32HAL_BOARD_AMC2C)
+#if defined(STM32HAL_BOARD_AMCBLDC) || defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7) || defined(STM32HAL_BOARD_AMC2CM4)
     embot::hw::motor::enable(embot::hw::MOTOR::one, false);
 #else
     #warning: choose a STM32HAL_BOARD_*    

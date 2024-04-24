@@ -48,9 +48,15 @@
 
 #if defined(MOTORHAL_changes)
 
+#if defined(STM32HAL_BOARD_AMC2CM4)
+#include "embot_hw_motor_bsp_amc2cm4.h"
+#define hadc1 (embot::hw::motor::bsp::amc2cm4::hADC1)
+#define hadc2 (embot::hw::motor::bsp::amc2cm4::hADC2)
+#elif defined(STM32HAL_BOARD_AMC1CM7)
 #include "embot_hw_motor_bsp_amc1cm7.h"
 #define hadc1 (embot::hw::motor::bsp::amc1cm7::hADC1)
 #define hadc2 (embot::hw::motor::bsp::amc1cm7::hADC2)
+#endif
 
 #else
 /* Declared in main.h */

@@ -28,13 +28,12 @@
 #include "embot_core.h"
 #include <array>
 
-#include "embot_hw_motor_bsp_amc1cm7.h"
 
 // --------------------------------------------------------------------------------------------------------------------
 // - configuration of peripherals and chips. it is done board by board. it contains a check vs correct STM32HAL_BOARD_*
 // --------------------------------------------------------------------------------------------------------------------
 
-#include "embot_hw_bsp_amc1cm7_config.h"
+#include "embot_hw_bsp_config.h"
 
 // --------------------------------------------------------------------------------------------------------------------
 // - all the rest
@@ -46,12 +45,21 @@
 
 #elif defined(EMBOT_ENABLE_hw_motor)
 
+#if defined(STM32HAL_BOARD_AMC1CM7) 
+#include "embot_hw_motor_bsp_amc1cm7.h"
+#elif defined(STM32HAL_BOARD_AMC2CM4)
+#include "embot_hw_motor_bsp_amc2cm4.h"
+#endif
 
 namespace embot::hw::motor::adc {
     
-
+#if defined(STM32HAL_BOARD_AMC1CM7) 
 #define hadc1 (embot::hw::motor::bsp::amc1cm7::hADC1)
 #define hadc2 (embot::hw::motor::bsp::amc1cm7::hADC2)
+#elif defined(STM32HAL_BOARD_AMC2CM4)
+#define hadc1 (embot::hw::motor::bsp::amc2cm4::hADC1)
+#define hadc2 (embot::hw::motor::bsp::amc2cm4::hADC2)
+#endif
 
 struct Converter
 {
@@ -285,7 +293,12 @@ bool deinit()
 
 namespace embot::hw::motor::enc {
     
+#if defined(STM32HAL_BOARD_AMC1CM7) 
 #define ENC_TIM (embot::hw::motor::bsp::amc1cm7::hTIM5)
+#elif defined(STM32HAL_BOARD_AMC2CM4)
+#define ENC_TIM (embot::hw::motor::bsp::amc2cm4::hTIM5)
+#endif    
+    
     
 #define ENC_INDEX_LEADING_EDGE          TIM_CHANNEL_3
 #define ENC_INDEX_IT_LEADING_EDGE       TIM_IT_CC3
@@ -338,7 +351,12 @@ extern bool deinit()
     HAL_TIM_IC_Stop(&ENC_TIM, ENC_INDEX_LEADING_EDGE);
     HAL_TIM_Encoder_Stop(&ENC_TIM, TIM_CHANNEL_ALL);
 
-    embot::hw::motor::bsp::amc1cm7::DeInit_TIM5();    
+#if defined(STM32HAL_BOARD_AMC1CM7) 
+    embot::hw::motor::bsp::amc1cm7::DeInit_TIM5();
+#elif defined(STM32HAL_BOARD_AMC2CM4)
+    embot::hw::motor::bsp::amc2cm4::DeInit_TIM5();
+#endif      
+        
     
     _enc_internals.started = false;
     
@@ -363,8 +381,14 @@ extern bool start(const Mode& mode)
     #warning marco.accame: so far we dont manage mode.calibrate_with_hall and mode.use_index
     
     _enc_internals.conversion.factor = 65536L*_enc_internals.mode.num_polar_couples/_enc_internals.mode.resolution;
-        
+    
+#if defined(STM32HAL_BOARD_AMC1CM7) 
     embot::hw::motor::bsp::amc1cm7::Init_TIM5(_enc_internals.mode.resolution, _enc_internals.mode.num_polar_couples);
+#elif defined(STM32HAL_BOARD_AMC2CM4)
+    embot::hw::motor::bsp::amc2cm4::Init_TIM5(_enc_internals.mode.resolution, _enc_internals.mode.num_polar_couples);
+#endif       
+        
+    
     
     // and now i can do what is required ... i also start the index ... who cares
     
@@ -433,8 +457,13 @@ void force(int32_t value)
 
 
 namespace embot::hw::motor::hall {
-    
+ 
+#if defined(STM32HAL_BOARD_AMC1CM7) 
 #define HALL_TIM (embot::hw::motor::bsp::amc1cm7::hTIM4)
+#elif defined(STM32HAL_BOARD_AMC2CM4)
+#define HALL_TIM (embot::hw::motor::bsp::amc2cm4::hTIM4)
+#endif        
+
     
 struct hall_Table
 {
@@ -865,7 +894,12 @@ int32_t getangle()
 
 namespace embot::hw::motor::pwm {
     
+#if defined(STM32HAL_BOARD_AMC1CM7) 
 #define htim1 (embot::hw::motor::bsp::amc1cm7::hTIM1)
+#elif defined(STM32HAL_BOARD_AMC2CM4)
+#define htim1 (embot::hw::motor::bsp::amc2cm4::hTIM1)
+#endif   
+    
 
 
 struct pwm_Internals
@@ -950,7 +984,12 @@ extern void set(uint16_t u, uint16_t v, uint16_t w)
 
 uint16_t map2integer(float x)
 {
+#if defined(STM32HAL_BOARD_AMC1CM7) 
     static constexpr float maxpwmdiv100 = static_cast<float>(embot::hw::motor::bsp::amc1cm7::PWMvals.value100perc) / 100.0;
+#elif defined(STM32HAL_BOARD_AMC2CM4)
+    static constexpr float maxpwmdiv100 = static_cast<float>(embot::hw::motor::bsp::amc2cm4::PWMvals.value100perc) / 100.0;
+#endif  
+    
     uint16_t r = 0;
     if((x > 0) && (x < 100.0))
     {
@@ -958,8 +997,12 @@ uint16_t map2integer(float x)
         r = static_cast<uint16_t>(t);
     }
     else if(x >= 100.0)
-    {
+    {      
+#if defined(STM32HAL_BOARD_AMC1CM7) 
         r = embot::hw::motor::bsp::amc1cm7::PWMvals.value100perc;
+#elif defined(STM32HAL_BOARD_AMC2CM4)
+        r = embot::hw::motor::bsp::amc2cm4::PWMvals.value100perc;
+#endif             
     }
     
     return r;    
@@ -1003,9 +1046,14 @@ namespace embot::hw::analog {
 
 namespace embot::hw::analog {
      
-    
+#if defined(STM32HAL_BOARD_AMC1CM7) 
 #define hadc3 (embot::hw::motor::bsp::amc1cm7::hADC3)
 #define htim6 (embot::hw::motor::bsp::amc1cm7::hTIM6)
+#elif defined(STM32HAL_BOARD_AMC2CM4)
+#define hadc3 (embot::hw::motor::bsp::amc2cm4::hADC3)
+#define htim6 (embot::hw::motor::bsp::amc2cm4::hTIM6)
+#endif  
+    
     
 constexpr uint8_t NUMBER_OF_ADC3_CHANNELS = {6}; // for ADC3
 

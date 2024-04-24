@@ -35,7 +35,7 @@ inline void rtw_mutex_lock(void)
     #ifdef STM32HAL_BOARD_AMCBLDC
         NVIC_DisableIRQ(DMA1_Channel2_IRQn);
     #endif    
-    #ifdef STM32HAL_BOARD_AMC2C
+    #if defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7) || defined(STM32HAL_BOARD_AMC2CM4)
         NVIC_DisableIRQ(BDMA_Channel2_IRQn);
     #endif
     }  
@@ -48,7 +48,7 @@ inline void rtw_mutex_unlock(void)
     #ifdef STM32HAL_BOARD_AMCBLDC
         NVIC_EnableIRQ(DMA1_Channel2_IRQn);
     #endif
-    #ifdef STM32HAL_BOARD_AMC2C
+    #if defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7) || defined(STM32HAL_BOARD_AMC2CM4)
         NVIC_EnableIRQ(BDMA_Channel2_IRQn);
     #endif
     }

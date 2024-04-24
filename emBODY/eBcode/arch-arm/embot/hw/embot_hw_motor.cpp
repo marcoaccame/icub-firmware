@@ -88,7 +88,7 @@ namespace embot { namespace hw { namespace motor {
 
 #elif defined(EMBOT_ENABLE_hw_motor)
 
-#if defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7)   
+#if defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7) || defined(STM32HAL_BOARD_AMC2CM4) 
     #include "motorhal.h"  
 #endif
 
@@ -400,7 +400,7 @@ namespace embot { namespace hw { namespace motor {
 // in here is the part for low level hw of the boards (amc2c or amcbldc)
       
     
-#if defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7)
+#if defined(STM32HAL_BOARD_AMC2C) || defined(STM32HAL_BOARD_AMC1CM7) || defined(STM32HAL_BOARD_AMC2CM4)
     
     result_t s_hw_init(MOTOR h)
     {

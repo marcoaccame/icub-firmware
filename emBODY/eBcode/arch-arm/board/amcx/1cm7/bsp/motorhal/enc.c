@@ -40,8 +40,13 @@
 
 #if defined(MOTORHAL_changes)
 
+#if defined(STM32HAL_BOARD_AMC2CM4)
+#include "embot_hw_motor_bsp_amc2cm4.h"
+#define ENC_TIM (embot::hw::motor::bsp::amc2cm4::hTIM5)
+#elif defined(STM32HAL_BOARD_AMC1CM7)
 #include "embot_hw_motor_bsp_amc1cm7.h"
 #define ENC_TIM (embot::hw::motor::bsp::amc1cm7::hTIM5)
+#endif
 
 #else
 /* Can be htim2 or htim5 */
