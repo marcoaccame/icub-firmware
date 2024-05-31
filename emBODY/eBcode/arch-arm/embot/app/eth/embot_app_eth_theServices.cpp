@@ -806,7 +806,7 @@ void embot::app::eth::theServices::Impl::onendverifyactivate(Service *s, const e
 
     embot::app::eth::theHandler::getInstance().transmit(ropdesc);
         
-//    embot::app::eth::theErrorManager::getInstance().emit(embot::app::eth::theErrorManager::Severity::trace, {"theServices::onendverifyactivate()", thr}, {}, ok ? "ok": "false");
+    embot::app::eth::theErrorManager::getInstance().emit(embot::app::eth::theErrorManager::Severity::trace, {"theServices::onendverifyactivate()", thr}, {}, ok ? "ok": "false");
 }
 
 // the signature of this funtion is the same as embot::app::eth::Service::OnEndOfOperation
@@ -854,7 +854,7 @@ void embot::app::eth::theServices::Impl::onendverifyactivate2(Service *s, bool o
 
     embot::app::eth::theHandler::getInstance().transmit(ropdesc);
         
-//    embot::app::eth::theErrorManager::getInstance().emit(embot::app::eth::theErrorManager::Severity::trace, {"theServices::onendverifyactivate2()", thr}, {}, ok ? "ok": "false");
+    embot::app::eth::theErrorManager::getInstance().emit(embot::app::eth::theErrorManager::Severity::trace, {"theServices::onendverifyactivate2()", thr}, {}, ok ? "ok": "false");
 }
 
 #if defined(USE_ICC_COMM) 

@@ -446,7 +446,7 @@ extern eObool_t eom_emsrunner_CycleHasJustTransmittedRegulars(EOMtheEMSrunner *p
 
 #if defined(USE_EMBOT_theHandler)
 
-#include "embot_hw_bsp_amc_config.h"
+#include "embot_hw_bsp_config.h"
 #include "theApplication_Config.h"
 
 #if defined(EMBOT_ENABLE_hw_timer_emulated)
@@ -1380,7 +1380,7 @@ static void s_eom_emsrunner_update_diagnosticsinfo_check_overflows2(eOemsrunner_
 			if(eobool_true == s_theemsrunner.cycletiming.tasktiming[taskid].isoverflown)
 			{
                 static int dont_stress = 0;
-#if defined(STM32HAL_BOARD_AMC)
+#if defined(USE_EMBOT_theHandler)
                 static const int stresstolerance  = 0;
 #else
                 static const int stresstolerance  = 5000;

@@ -497,6 +497,64 @@ extern void stm32hal_board_init(void);
         #error unsupported driver version for amc2c
     #endif
 
+        #elif   defined(STM32HAL_BOARD_AMC1CM7) 
+
+    // two cases: v1A0 and v1B1
+    #if (STM32HAL_DRIVER_VERSION == 0x1A0)
+    
+        #include "../src/config/stm32hal_driver_cfg_of_amc1cm7_v1A0.h"
+
+//        #include "../src/board/amc/v1A0/inc/gpio.h"
+//        #include "../src/board/amc/v1A0/inc/main.h"
+//        #include "../src/board/amc/v1A0/inc/eth.h"
+//        #include "../src/board/amc/v1A0/inc/spi.h"
+//        //#include "../src/board/amc/v1A0/inc/fdcan.h"
+
+        #include "../src/board/amc1cm7/v1A0/inc/stm32h7xx_it.h"
+
+    #elif (STM32HAL_DRIVER_VERSION == 0x1B1)
+    
+        #include "../src/config/stm32hal_driver_cfg_of_amc1cm7_v1B1.h"
+
+//        #include "../src/board/amc/v1B1/inc/gpio.h"
+//        #include "../src/board/amc/v1B1/inc/main.h"
+//        #include "../src/board/amc/v1B1/inc/eth.h"
+//        #include "../src/board/amc/v1B1/inc/spi.h"
+//        #include "../src/board/amc/v1B1/inc/fdcan.h"
+
+        #include "../src/board/amc1cm7/v1B1/inc/stm32h7xx_it.h"
+    #else
+        #error unsupported driver version for amc1cm7
+    #endif
+
+#elif   defined(STM32HAL_BOARD_AMC2CM4) 
+
+
+    // two cases: v1A0 and v1B1
+    #if (STM32HAL_DRIVER_VERSION == 0x1A0)
+       
+        #include "../src/config/stm32hal_driver_cfg_of_amc2cm4_v1A0.h"
+
+//        #include "../src/board/amc2c/v1A0/inc/gpio.h"
+//        #include "../src/board/amc2c/v1A0/inc/main.h"
+//#if defined(STM32HAL_BOARD_AMC2C_V1A0_enableETH)        
+//        #include "../src/board/amc/v1A0/inc/eth.h"
+//#endif
+        #include "../src/board/amc2c/v1A0/inc/stm32h7xx_it.h"
+
+    #elif (STM32HAL_DRIVER_VERSION == 0x1B1)
+
+        #include "../src/config/stm32hal_driver_cfg_of_amc2cm4_v1B1.h"
+
+//        #include "../src/board/amc2c/v1B1/inc/gpio.h"
+//        #include "../src/board/amc2c/v1B1/inc/main.h"
+
+        #include "../src/board/amc2cm4/v1B1/inc/stm32h7xx_it.h"
+		
+    #else
+        #error unsupported driver version for amc2cm4
+    #endif   
+        
 #elif   defined(STM32HAL_BOARD_AMCFOCM7) 
 
     // one case: v1A0
@@ -608,7 +666,7 @@ extern void stm32hal_board_init(void);
     
 #elif   defined(STM32HAL_BOARD_MC4PLUS)	
         
-    // nothing to include 
+    // nothing to include      
         
 #else
     #error STM32HAL: you must define a STM32HAL_BOARD_${B}

@@ -53,6 +53,11 @@ the ICC or the CAN mapping depending on the bus type
 
 namespace embot::app::eth::mc::messaging::receiver {
     
+//#define PRINT_MSG_FROM_ACTUATOR    
+
+#if defined(PRINT_MSG_FROM_ACTUATOR)    
+    char dbgstr[128] = {0};
+#endif    
   
     bool getentityindex(const embot::app::msg::Location &source, uint8_t &index)
     {
@@ -109,7 +114,10 @@ namespace embot::app::eth::mc::messaging::receiver {
             motor->status.basic.mot_velocity = msg.info.velocity;
             motor->status.basic.mot_position = msg.info.position;
             MController_update_motor_odometry_fbk_can(motorindex, (void*)msg.info.payload);      
-            
+#if defined(PRINT_MSG_FROM_ACTUATOR)
+            std::snprintf(dbgstr, sizeof(dbgstr), "from %s, st1: cu %d, ve %d, po %d", msg.source.to_string().c_str(), msg.info.current, msg.info.velocity, msg.info.position);  
+            embot::core::print(dbgstr);            
+#endif            
             return ok; 
         } 
         
@@ -125,7 +133,10 @@ namespace embot::app::eth::mc::messaging::receiver {
             }
             
             MController_update_motor_state_fbk(motorindex, (void*)msg.info.payload);
-
+#if defined(PRINT_MSG_FROM_ACTUATOR)
+            std::snprintf(dbgstr, sizeof(dbgstr), "from %s, st2: cmo %d, qef %x, pwm %d, flt %x",  msg.source.to_string().c_str(), msg.info.controlmode, msg.info.qencflags, msg.info.pwmfeedback, msg.info.motorfaultflags);  
+            embot::core::print(dbgstr);  
+#endif
             return ok; 
         } 
         
@@ -865,8 +876,54 @@ namespace embot::app::eth::service::impl::mc {
 
 } // namespace embot::app::eth {  
 
+extern "C"
+{
+
+    // - in here i put the functions used to initialise the values in ram of the joints and motors ... better in here rather than elsewhere.
+
+    static const eOmc_joint_t s_joint_default_value =
+    {   // to simplify we set everything to zero and then we edit eoprot_fun_INIT_mc_joint*() functions 
+        0
+    };
 
 
+    static const eOmc_motor_t s_motor_default_value =
+    {   // to simplify we set everything to zero and then we edit eoprot_fun_INIT_mc_motor*() functions
+        0
+    }; 
+
+
+    extern void eoprot_fun_INIT_mc_joint_config(const EOnv* nv)
+    {
+        eOmc_joint_config_t *cfg = (eOmc_joint_config_t*)eo_nv_RAM(nv);
+        memmove(cfg, &s_joint_default_value.config, sizeof(eOmc_joint_config_t));
+    }
+
+    extern void eoprot_fun_INIT_mc_joint_status(const EOnv* nv)
+    {
+        eOmc_joint_status_t *sta = (eOmc_joint_status_t*)eo_nv_RAM(nv);
+        memmove(sta, &s_joint_default_value.status, sizeof(eOmc_joint_status_t));
+        
+        sta->core.modes.controlmodestatus = eomc_controlmode_notConfigured;
+        sta->core.modes.interactionmodestatus = eOmc_interactionmode_stiff;
+    }
+
+    extern void eoprot_fun_INIT_mc_motor_config(const EOnv* nv)
+    {
+        eOmc_motor_config_t *cfg = (eOmc_motor_config_t*)eo_nv_RAM(nv);
+        memmove(cfg, &s_motor_default_value.config, sizeof(eOmc_motor_config_t));
+    }
+
+    extern void eoprot_fun_INIT_mc_motor_status(const EOnv* nv)
+    {
+        eOmc_motor_status_t *sta = (eOmc_motor_status_t*)eo_nv_RAM(nv);
+        memmove(sta, &s_motor_default_value.status, sizeof(eOmc_motor_status_t));
+        
+        // Initialize the fault state to dummy since code zero is assigned to unspecified system error
+        sta->mc_fault_state = eoerror_code_dummy;
+    }
+
+}
 
 // - end-of-file (leave a blank line after)----------------------------------------------------------------------------
 
