@@ -24,7 +24,7 @@
 
 #include <vector>
 
-#include "embot_hw_bsp_amcfocm4.h"
+#include "embot_hw_bsp_amcfoc_2cm4.h"
 
 embot::app::scope::Signal *signal {nullptr};
 
