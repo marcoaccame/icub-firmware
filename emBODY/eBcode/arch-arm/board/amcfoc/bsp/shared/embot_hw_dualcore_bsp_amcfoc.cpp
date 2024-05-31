@@ -69,10 +69,10 @@ namespace embot::hw::dualcore::bsp {
 
 namespace embot::hw::dualcore::bsp {         
 
-#if defined(dualcore_BOOT_cm4master)      
+#if defined(STM32HAL_dualcore_BOOT_cm4master)      
     constexpr PROP _cm4 = { embot::hw::dualcore::CORE::cm4, embot::hw::dualcore::BOOT::cm4master, embot::hw::MTX::one};  
     Config _config {embot::hw::dualcore::Config::HW::forceinit, embot::hw::dualcore::Config::CMD::activate};
-#elif defined(dualcore_BOOT_cm7master)
+#elif defined(STM32HAL_dualcore_BOOT_cm7master)
     constexpr PROP _cm4 = { embot::hw::dualcore::CORE::cm4, embot::hw::dualcore::BOOT::cm7master, embot::hw::MTX::one};
     Config _config {embot::hw::dualcore::Config::HW::forceinit, embot::hw::dualcore::Config::CMD::donothing};
 #endif

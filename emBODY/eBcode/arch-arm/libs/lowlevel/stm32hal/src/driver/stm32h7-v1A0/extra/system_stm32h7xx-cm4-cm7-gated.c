@@ -1,5 +1,5 @@
 
-#if defined(dualcore_BOOT_cm4master)
+#if defined(STM32HAL_dualcore_BOOT_cm4master)
 
 /**
   ******************************************************************************
@@ -542,7 +542,7 @@ void SystemInit_ExtMemCtl(void)
   * @}
   */
 
-#elif defined(dualcore_BOOT_cm7master)
+#elif defined(STM32HAL_dualcore_BOOT_cm7master)
 
 /**
   ******************************************************************************
@@ -1085,5 +1085,5 @@ void SystemInit_ExtMemCtl(void)
   */
 
 #else
-    #warning pls choose either dualcore_BOOT_cm4master or dualcore_BOOT_cm7master
+    #warning pls choose either STM32HAL_dualcore_BOOT_cm4master or STM32HAL_dualcore_BOOT_cm7master
 #endif

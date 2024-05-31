@@ -174,7 +174,7 @@ void initSystem(embot::os::Thread *t, void* initparam)
     theleds.get(embot::hw::LED::one).off(); 
     theleds.get(embot::hw::LED::two).off(); 
     theleds.get(embot::hw::LED::three).off();     
-#if defined(dualcore_BOOT_cm4master)
+#if defined(STM32HAL_dualcore_BOOT_cm4master)
     theleds.get(embot::hw::LED::one).pulse(embot::core::time1second);
 #else
 //    embot::app::LEDwaveT<64> ledwave(150*embot::core::time1millisec, 30, std::bitset<64>(0b01010101));
@@ -226,7 +226,7 @@ int main(void)
         embot::hw::FLASHpartitionID::eapplication01
     };
     
-#if defined(dualcore_BOOT_cm4master)    
+#if defined(STM32HAL_dualcore_BOOT_cm4master)    
     embot::hw::dualcore::config({embot::hw::dualcore::Config::HW::forceinit, embot::hw::dualcore::Config::CMD::activate});
 //    embot::hw::dualcore::config({embot::hw::dualcore::Config::HW::forceinit, embot::hw::dualcore::Config::CMD::donothing});
 #endif    

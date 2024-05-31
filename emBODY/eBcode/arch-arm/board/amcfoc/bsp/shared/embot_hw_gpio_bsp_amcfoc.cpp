@@ -38,7 +38,7 @@ using namespace embot::core::binary;
 // - configuration of peripherals and chips. it is done board by board. it contains a check vs correct STM32HAL_BOARD_*
 // --------------------------------------------------------------------------------------------------------------------
 
-#include "embot_hw_bsp_amcfoc_2cm4_config.h"
+#include "embot_hw_bsp_config.h"
 
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,6 @@ using namespace embot::core::binary;
 // --------------------------------------------------------------------------------------------------------------------
 
 
-#warning: maybe move it into shared
 
 // - support map: begin of embot::hw::gpio
 
