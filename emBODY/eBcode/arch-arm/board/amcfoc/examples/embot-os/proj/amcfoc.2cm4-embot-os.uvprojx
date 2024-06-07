@@ -452,7 +452,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>embot::hw</GroupName>
+          <GroupName>embot::hw-core</GroupName>
           <Files>
             <File>
               <FileName>embot_hw_bsp.cpp</FileName>
@@ -562,7 +562,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>embot::hw::bsp-shared</GroupName>
+          <GroupName>embot::hw::bsp-core-shared</GroupName>
           <Files>
             <File>
               <FileName>embot_hw_dualcore_bsp_amcfoc.cpp</FileName>
@@ -583,6 +583,11 @@
               <FileName>embot_hw_flash_bsp_amcfoc.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\..\..\bsp\shared\embot_hw_flash_bsp_amcfoc.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>embot_hw_led_bsp_pinout_amcfoc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\bsp\shared\embot_hw_led_bsp_pinout_amcfoc.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -717,7 +722,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>embot::hw::bsp::cm4</GroupName>
+          <GroupName>embot::hw::bsp-core-cm4</GroupName>
           <Files>
             <File>
               <FileName>embot_hw_bsp_amcfoc_2cm4.cpp</FileName>
@@ -728,6 +733,21 @@
               <FileName>embot_hw_led_bsp_amcfoc_2cm4.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\..\..\bsp\cm4\embot_hw_led_bsp_amcfoc_2cm4.cpp</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>embot::hw-others</GroupName>
+          <Files>
+            <File>
+              <FileName>embot_hw_eeprom.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\..\..\embot\hw\embot_hw_eeprom.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>embot_hw_eth.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\..\..\embot\hw\embot_hw_eth.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -1067,7 +1087,7 @@
               <MiscControls> -Wno-pragma-pack -Wno-deprecated-register -DEMBOT_USE_rtos_osal</MiscControls>
               <Define>STM32HAL_dualcore_BOOT_cm4master USE_STM32HAL STM32HAL_BOARD_AMCFOC_2CM4 STM32HAL_DRIVER_V1A0</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\..\libs\lowlevel\stm32hal\api;..\..\..\..\..\libs\highlevel\abslayer\osal\api;..\..\..\..\..\..\..\..\..\icub-firmware-shared\embot\core;..\..\..\..\..\embot\hw;..\..\..\..\..\embot\os;..\..\..\..\..\embot\app;..\..\..\..\..\embot\app;..\..\..\..\..\libs\midware\eventviewer\api;..\..\..\..\..\libs\highlevel\services\embenv\api;..\..\..\..\..\..\..\..\..\icub-firmware-shared\embot\tools;..\..\..\bsp\cm4;..\..\..\bsp\shared</IncludePath>
+              <IncludePath>..\..\..\..\..\libs\lowlevel\stm32hal\api;..\..\..\..\..\libs\highlevel\abslayer\osal\api;..\..\..\..\..\..\..\..\..\icub-firmware-shared\embot\core;..\..\..\..\..\embot\hw;..\..\..\..\..\embot\os;..\..\..\..\..\embot\app;..\..\..\..\..\embot\app;..\..\..\..\..\libs\midware\eventviewer\api;..\..\..\..\..\libs\highlevel\services\embenv\api;..\..\..\..\..\..\..\..\..\icub-firmware-shared\embot\tools;..\..\..\bsp\cm4;..\..\..\bsp\shared;..\..\..\..\..\libs\highlevel\abslayer\ipal\api</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1098,7 +1118,7 @@
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>..\cfg\amcfoc.2cm4-template-appl.sct</ScatterFile>
+            <ScatterFile>..\cfg\amcfoc.2cm4-template-eloader.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc>--diag_suppress=L6329</Misc>
@@ -1179,7 +1199,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>embot::hw</GroupName>
+          <GroupName>embot::hw-core</GroupName>
           <Files>
             <File>
               <FileName>embot_hw_bsp.cpp</FileName>
@@ -1289,7 +1309,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>embot::hw::bsp-shared</GroupName>
+          <GroupName>embot::hw::bsp-core-shared</GroupName>
           <Files>
             <File>
               <FileName>embot_hw_dualcore_bsp_amcfoc.cpp</FileName>
@@ -1310,6 +1330,11 @@
               <FileName>embot_hw_flash_bsp_amcfoc.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\..\..\bsp\shared\embot_hw_flash_bsp_amcfoc.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>embot_hw_led_bsp_pinout_amcfoc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\bsp\shared\embot_hw_led_bsp_pinout_amcfoc.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1444,7 +1469,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>embot::hw::bsp::cm4</GroupName>
+          <GroupName>embot::hw::bsp-core-cm4</GroupName>
           <Files>
             <File>
               <FileName>embot_hw_bsp_amcfoc_2cm4.cpp</FileName>
@@ -1455,6 +1480,21 @@
               <FileName>embot_hw_led_bsp_amcfoc_2cm4.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\..\..\bsp\cm4\embot_hw_led_bsp_amcfoc_2cm4.cpp</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>embot::hw-others</GroupName>
+          <Files>
+            <File>
+              <FileName>embot_hw_eeprom.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\..\..\embot\hw\embot_hw_eeprom.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>embot_hw_eth.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\..\..\embot\hw\embot_hw_eth.cpp</FilePath>
             </File>
           </Files>
         </Group>

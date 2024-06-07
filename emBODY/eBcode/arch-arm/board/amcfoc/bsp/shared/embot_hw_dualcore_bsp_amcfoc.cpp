@@ -103,8 +103,12 @@ namespace embot::hw::dualcore::bsp {
         return _config;
     }        
     
-    void mySystemClock_Config(void);
+    void stm_SystemClock_Config(void);
     void icub_SystemClock_Config(void);
+    
+    void traceport_init();
+    
+    void clocks_init();
     
     bool BSP::init() const
     {
@@ -113,25 +117,52 @@ namespace embot::hw::dualcore::bsp {
             // the cm4 is master, so it must call HAL_Init() and start the clocks
                
             HAL_Init();                    
-//            mySystemClock_Config();
+//            stm_SystemClock_Config();
             icub_SystemClock_Config();
-        
+            
+//            clocks_init();
+            traceport_init();        
         }
         else
         {
             // the cm4 is slave, so the cm7 has already done everything.
         } 
+   
+     
+        return true; 
+    }
 
-      __HAL_RCC_GPIOB_CLK_ENABLE();
-      __HAL_RCC_GPIOD_CLK_ENABLE();
-      __HAL_RCC_GPIOA_CLK_ENABLE();
-      __HAL_RCC_GPIOE_CLK_ENABLE();
-      __HAL_RCC_GPIOG_CLK_ENABLE();
-      __HAL_RCC_GPIOC_CLK_ENABLE();
-      __HAL_RCC_GPIOH_CLK_ENABLE();
-      __HAL_RCC_GPIOF_CLK_ENABLE();     
+} // namespace embot::hw::dualcore::bsp {   
 
 
+
+// in here are the SystemClock_Config() that we use and others
+
+namespace embot::hw::dualcore::bsp {
+
+
+    void clocks_init()
+    {
+        __HAL_RCC_GPIOA_CLK_ENABLE();
+        __HAL_RCC_GPIOB_CLK_ENABLE();
+        __HAL_RCC_GPIOC_CLK_ENABLE();
+        __HAL_RCC_GPIOD_CLK_ENABLE();
+        __HAL_RCC_GPIOE_CLK_ENABLE();
+        __HAL_RCC_GPIOF_CLK_ENABLE();   
+        __HAL_RCC_GPIOG_CLK_ENABLE();
+        __HAL_RCC_GPIOH_CLK_ENABLE();
+        __HAL_RCC_GPIOI_CLK_ENABLE();
+        __HAL_RCC_GPIOJ_CLK_ENABLE();
+        __HAL_RCC_GPIOK_CLK_ENABLE();
+
+    }
+
+    void traceport_init()
+    {
+        // that is correct but i rather not write the config in this way because it may override previous settings, so...
+
+#if 0        
+        // must enable clocks C D E
         RCC->AHB4ENR |= 0x0000001C;
         
         GPIOE->MODER = 0x000002A0;
@@ -147,18 +178,46 @@ namespace embot::hw::dualcore::bsp {
         GPIOC->MODER = 0x02000000;
         GPIOC->OSPEEDR = 0x03000000;
         GPIOC->PUPDR = 0x00000000;
-        GPIOC->AFR[1] = 0x00000000;            
-     
-        return true; 
+        GPIOC->AFR[1] = 0x00000000;    
+#else
+        // in here we configure the pins for trace-4. 
+        // we dont have swo because one of its pins must be used by a timer for MC
+        // 
+        // very important: to see the trace signals we must have a TRACECLK <= 100 MHz.
+        // so, in the clock tree we set: 
+        // RCC_OscInitStruct.PLL.PLLR = 8;
+        //
+        // pin configuration
+        // we have PE2 (TRACECLK), PE3 (TRACED0), PE4 (TRACED1), PD2 (TRACED2), PC12 (TRACED3)    
+        
+        // we start clocks C D E
+        __HAL_RCC_GPIOC_CLK_ENABLE();
+        __HAL_RCC_GPIOD_CLK_ENABLE();
+        __HAL_RCC_GPIOE_CLK_ENABLE();  
+
+
+        // they must be configured like that
+        GPIO_InitTypeDef gp = {0};       
+        gp.Mode = GPIO_MODE_AF_PP; 
+        gp.Pull = GPIO_NOPULL;
+        gp.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        gp.Alternate = GPIO_AF0_TRACE;
+        
+        // PE2, PE3, PE4
+        gp.Pin = GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4;
+        HAL_GPIO_Init(GPIOE, &gp);
+
+        // PD2
+        gp.Pin = GPIO_PIN_2;
+        HAL_GPIO_Init(GPIOD, &gp);
+              
+        // PC12
+        gp.Pin = GPIO_PIN_12;
+        HAL_GPIO_Init(GPIOC, &gp);
+
+#endif
     }
-
-} // namespace embot::hw::dualcore::bsp {   
-
-
-
-// in here are the SystemClock_Config() that we use
-
-namespace embot::hw::dualcore::bsp { 
+        
 
     // from icubtech
     
@@ -253,7 +312,7 @@ namespace embot::hw::dualcore::bsp {
       * @param  None
       * @retval None
       */
-    void mySystemClock_Config(void)
+    void stm_SystemClock_Config(void)
     {
       RCC_ClkInitTypeDef RCC_ClkInitStruct;
       RCC_OscInitTypeDef RCC_OscInitStruct;

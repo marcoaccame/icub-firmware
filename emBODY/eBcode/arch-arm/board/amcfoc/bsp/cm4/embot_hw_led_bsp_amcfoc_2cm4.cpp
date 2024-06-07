@@ -70,26 +70,27 @@ namespace embot::hw::led {
     constexpr BSP thebsp {        
         // maskofsupported
         mask::pos2mask<uint32_t>(LED::one) | mask::pos2mask<uint32_t>(LED::two) | mask::pos2mask<uint32_t>(LED::three) 
-//        | mask::pos2mask<uint32_t>(LED::four) 
-//        | mask::pos2mask<uint32_t>(LED::five) | mask::pos2mask<uint32_t>(LED::six)
+        | mask::pos2mask<uint32_t>(LED::four) | mask::pos2mask<uint32_t>(LED::five) | mask::pos2mask<uint32_t>(LED::six)
         ,        
         // properties
         {{
-            &led1p, &led2p, &led3p, nullptr, nullptr, nullptr, nullptr, nullptr         
+            &pled1, &pled2, &pled3, 
+            &pled4, &pled5, &pled6
+            // nullptr, nullptr, nullptr, nullptr, nullptr         
         }}        
     };
     
-    void clock_enable_H() { __HAL_RCC_GPIOH_CLK_ENABLE(); }
+    void clock_enable_D() { __HAL_RCC_GPIOD_CLK_ENABLE(); }
     void BSP::init(embot::hw::LED h) const 
     {
         uint8_t i = embot::core::tointegral(h);
         // activate the clock as cube-mx may not do that
-        //constexpr std::array<embot::core::fpWorker, 6> clockenable { clock_enable_H, clock_enable_H, clock_enable_H, clock_enable_H, clock_enable_H, clock_enable_H};        
+        //constexpr std::array<embot::core::fpWorker, 6> clockenable { clock_enable_D, clock_enable_D, clock_enable_D, clock_enable_D, clock_enable_D, clock_enable_D};        
         //if(i < clockenable.size())
         //{
         //    clockenable[i]();
         //}
-        clock_enable_H(); // no need of the above as every LED is on bus H
+        clock_enable_D(); // no need of the above as every LED is on bus H
         
         // init the gpio
         const embot::hw::GPIO &g = thebsp.properties[i]->gpio;
