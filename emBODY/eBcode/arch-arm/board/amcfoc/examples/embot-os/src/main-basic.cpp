@@ -44,6 +44,8 @@ void test_can_tick(embot::os::Thread *t, embot::os::EventMask eventmask, void *p
 constexpr embot::os::Event evtCAN1tx = embot::core::binary::mask::pos2mask<embot::os::Event>(2);
 constexpr embot::os::Event evtCAN1rx = embot::core::binary::mask::pos2mask<embot::os::Event>(3);
 
+
+#undef TEST_ETH
 void test_eth_init();
 void test_eth_tick();
 
@@ -66,8 +68,10 @@ void eventbasedthread_startup(embot::os::Thread *t, void *param)
     test_eeprom_init();
     
 //    test_can_init(t, param);
-    
-//    test_eth_init();
+
+#if defined(TEST_ETH)    
+    test_eth_init();
+#endif
     
     embot::os::Timer *tmr = new embot::os::Timer;   
     embot::os::Action act(embot::os::EventToThread(evtTick, t));
@@ -514,12 +518,15 @@ void test_can_tick(embot::os::Thread *t, embot::os::EventMask eventmask, void *p
 
 void test_eth_init()
 {
+#if defined(TEST_ETH)       
     ipal_hal_eth_cfg_t c {};
     embot::hw::eth::init(&c);
+#endif        
 }
 
 void test_eth_tick()
 {
+#if defined(TEST_ETH)       
     static bool prevlink1isup = false;    
     static bool prevlink2isup = false;
     
@@ -539,7 +546,8 @@ void test_eth_tick()
     
     
     prevlink1isup = link1isup;
-    prevlink2isup = link2isup;    
+    prevlink2isup = link2isup;  
+#endif    
 }
 
 

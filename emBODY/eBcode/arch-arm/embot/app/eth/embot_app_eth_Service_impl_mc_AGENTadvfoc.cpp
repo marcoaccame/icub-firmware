@@ -715,7 +715,8 @@ eOresult_t AGENTadvfoc::verify_step03_onENDof_candiscovery(void *tHIS, EOtheCANd
 volatile const embot::app::icc::Signature * const getsignature(size_t i)
 {
     // when we have more than one actuator (e.g., for the amcfoc), we shall have something different
-    return (volatile const embot::app::icc::Signature * const)(0x08100800);
+    #warning TODO make 0x08000800 or 0x08100800 dependent on board ...
+    return (volatile const embot::app::icc::Signature * const)(0x08000800);
 }
 
 bool AGENTadvfoc::iccdiscovery()
@@ -740,7 +741,7 @@ bool AGENTadvfoc::iccdiscovery()
                 // i must retrieve the board info on the other core
                 eObrd_info_t detected {};
                 // i will not use getfirmwareversion through ICC. 
-                // rather i will read the embot::app::icc::Signature of the second core mapped at 0x08100800               
+                // rather i will read the embot::app::icc::Signature of the second core mapped at startoflash+ 0x800               
 
                 volatile const embot::app::icc::Signature * signature = getsignature(i);
                  
