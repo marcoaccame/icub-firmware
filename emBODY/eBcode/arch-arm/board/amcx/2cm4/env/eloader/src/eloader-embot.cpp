@@ -77,7 +77,7 @@ constexpr embot::hw::Config hwCFG {nullptr, get1microtime2};
 #undef DEBUG_stayinhere
 // if defined it enables the CM4 core after clock initialization inside embot::hw::init()
 #undef DEBUG_startCMxnow
-#define DEBUG_eraseEEPROM
+#undef DEBUG_eraseEEPROM
 
 // used functions
 

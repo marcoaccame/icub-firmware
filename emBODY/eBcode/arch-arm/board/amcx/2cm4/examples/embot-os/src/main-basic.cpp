@@ -138,7 +138,7 @@ void eventbasedthread_onevent(embot::os::Thread *t, embot::os::EventMask eventma
     if(true == embot::core::binary::mask::check(eventmask, evtTick)) 
     { 
         
-        uid = embot::hw::sys::uniqueid();
+//        uid = embot::hw::sys::uniqueid();
 
 //        signal->on();   
 //        testduration();   
@@ -152,7 +152,7 @@ void eventbasedthread_onevent(embot::os::Thread *t, embot::os::EventMask eventma
 //        embot::core::print("mainthread-onevent: evtTick received @ time = " + tf.to_string(embot::core::TimeFormatter::Mode::full));   
     }
     
-    test_can_tick(t, eventmask, param);
+//    test_can_tick(t, eventmask, param);
     
 
 }
@@ -272,8 +272,8 @@ constexpr embot::hw::EEPROM eeprom2test {embot::hw::EEPROM::one};
 
 void test_eeprom_init()
 {
-//    embot::hw::eeprom::init(eeprom2test, {});
-//    embot::hw::eeprom::erase(eeprom2test, 0, 8*1024, 100000);
+    embot::hw::eeprom::init(eeprom2test, {});
+    embot::hw::eeprom::erase(eeprom2test, 0, 8*1024, 100000);
 }
 
 constexpr size_t capacity {2048};
