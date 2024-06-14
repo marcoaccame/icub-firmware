@@ -69,19 +69,25 @@ namespace embot::hw::dualcore::bsp {
 
 namespace embot::hw::dualcore::bsp {         
 
-#if defined(STM32HAL_dualcore_BOOT_cm4master)      
-    constexpr PROP _cm4 = { embot::hw::dualcore::CORE::cm4, embot::hw::dualcore::BOOT::cm4master, embot::hw::MTX::one};  
-    Config _config {embot::hw::dualcore::Config::HW::forceinit, embot::hw::dualcore::Config::CMD::activate};
+#if defined(CORE_CM4)     
+    constexpr embot::hw::dualcore::CORE cc {embot::hw::dualcore::CORE::cm4};
+#else
+    constexpr embot::hw::dualcore::CORE cc {embot::hw::dualcore::CORE::cm7};
+#endif
+
+#if defined(STM32HAL_dualcore_BOOT_cm4master)    
+    constexpr PROP _cmx = { cc, embot::hw::dualcore::BOOT::cm4master, embot::hw::MTX::one };  
+    Config _config {embot::hw::dualcore::Config::HW::forceinit, embot::hw::dualcore::Config::CMD::activate};   
 #elif defined(STM32HAL_dualcore_BOOT_cm7master)
-    constexpr PROP _cm4 = { embot::hw::dualcore::CORE::cm4, embot::hw::dualcore::BOOT::cm7master, embot::hw::MTX::one};
-    Config _config {embot::hw::dualcore::Config::HW::forceinit, embot::hw::dualcore::Config::CMD::donothing};
+    constexpr PROP _cmx = { cc, embot::hw::dualcore::BOOT::cm7master, embot::hw::MTX::one };    
+    Config _config {embot::hw::dualcore::Config::HW::forceinit, embot::hw::dualcore::Config::CMD::donothing};   
 #endif
     
     constexpr BSP thebsp {        
 
         // properties
         {{
-            &_cm4         
+            &_cmx         
         }}        
     };
     
@@ -112,20 +118,39 @@ namespace embot::hw::dualcore::bsp {
     
     bool BSP::init() const
     {
-        if(embot::hw::dualcore::BOOT::cm4master == _cm4.boot)
+        if(embot::hw::dualcore::BOOT::cm4master == _cmx.boot)
         {
-            // the cm4 is master, so it must call HAL_Init() and start the clocks
-               
-            HAL_Init();                    
-//            stm_SystemClock_Config();
-            icub_SystemClock_Config();
-            
-//            clocks_init();
-            traceport_init();        
+#if defined(CORE_CM4)            
+//            if(embot::hw::dualcore::CORE::cm4 == _cmx.core)
+//            {
+                // the cm4 is master, so it must call HAL_Init() and start the clocks
+                   
+                HAL_Init();                    
+    //            stm_SystemClock_Config();
+                icub_SystemClock_Config();
+                
+    //            clocks_init();
+                traceport_init(); 
+//            } 
+#else            
+//            else                
+//            {
+                // the cm7 must just ...
+                // maybe just cache
+                 SCB_EnableICache();               
+//            }
+#endif            
         }
         else
         {
-            // the cm4 is slave, so the cm7 has already done everything.
+            if(embot::hw::dualcore::CORE::cm4 == _cmx.core)
+            {
+                // the cm4 is slave, so the cm7 has already done everything.
+            }
+            else
+            {
+                // to be filled when we and if we want the cm7 to be master
+            }
         } 
    
      

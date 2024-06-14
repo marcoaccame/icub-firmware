@@ -70,12 +70,10 @@ namespace embot::hw::led {
     constexpr BSP thebsp {        
         // maskofsupported
         mask::pos2mask<uint32_t>(LED::one) | mask::pos2mask<uint32_t>(LED::two) | mask::pos2mask<uint32_t>(LED::three) 
-//        | mask::pos2mask<uint32_t>(LED::four) | mask::pos2mask<uint32_t>(LED::five) | mask::pos2mask<uint32_t>(LED::six)
         ,        
         // properties
         {{
-            &pled1, &pled2, &pled3, 
-//            &pled4, &pled5, &pled6
+            &pled4, &pled5, &pled6,
             nullptr, nullptr, nullptr, nullptr, nullptr         
         }}        
     };
