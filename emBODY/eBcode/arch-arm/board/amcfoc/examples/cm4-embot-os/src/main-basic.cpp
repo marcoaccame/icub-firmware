@@ -65,7 +65,7 @@ void eventbasedthread_startup(embot::os::Thread *t, void *param)
     constexpr embot::app::scope::SignalEViewer::Config cc{ON, embot::app::scope::SignalEViewer::Config::LABEL::one};
     signal = new embot::app::scope::SignalEViewer(cc);    
     
-    test_eeprom_init();
+//    test_eeprom_init();
     
 //    test_can_init(t, param);
 
@@ -301,7 +301,7 @@ constexpr size_t adr2use {0};
 void test_eeprom_tick()
 {
     
-    return;
+//    return;
     
     static size_t cnt = 0;
     cnt++;

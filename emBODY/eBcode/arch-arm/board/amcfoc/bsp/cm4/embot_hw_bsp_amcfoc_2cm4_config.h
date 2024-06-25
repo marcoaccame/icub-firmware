@@ -27,8 +27,9 @@
     #define EMBOT_ENABLE_hw_led
     #define EMBOT_ENABLE_hw_flash
     
-//    #define EMBOT_ENABLE_hw_spi
-//    #define EMBOT_ENABLE_hw_eeprom
+    #define EMBOT_ENABLE_hw_spi
+    #define EMBOT_ENABLE_hw_eeprom
+    
 //    #define EMBOT_ENABLE_hw_encoder
 //    #define EMBOT_ENABLE_hw_can
 //    #define EMBOT_ENABLE_hw_eth

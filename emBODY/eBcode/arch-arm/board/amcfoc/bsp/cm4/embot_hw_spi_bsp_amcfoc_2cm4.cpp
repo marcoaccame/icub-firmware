@@ -38,7 +38,7 @@ using namespace embot::core::binary;
 // - configuration of peripherals and chips. it is done board by board. it contains a check vs correct STM32HAL_BOARD_*
 // --------------------------------------------------------------------------------------------------------------------
 
-#include "embot_hw_bsp_amc2cm4_config.h"
+#include "embot_hw_bsp_config.h"
 
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -68,6 +68,22 @@ namespace embot::hw::spi::bsp {
 
 namespace embot::hw::spi::bsp {
     
+#if 0
+    spi3 is shared between eth and eeprom
+        
+    uses SPI_BAUDRATEPRESCALER_16
+    hspi3.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+        
+    sclk ee PC10
+    miso ee PC11   also eth miso
+    mosi ee PD10
+    
+    ee nsel PA4
+    
+    EE_WP
+
+
+#endif
        
     SPI_Device* getDEVICE(embot::hw::SPI h)
     {
@@ -98,7 +114,7 @@ namespace embot::hw::spi::bsp {
     SPI_HandleTypeDef hspi3 {};
     constexpr std::array<embot::hw::GPIO, SignalsNumberOf> pinoutspi3 = { {
         {embot::hw::GPIO::PORT::C, embot::hw::GPIO::PIN::eleven},   // miso
-        {embot::hw::GPIO::PORT::D, embot::hw::GPIO::PIN::six},      // mosi
+        {embot::hw::GPIO::PORT::D, embot::hw::GPIO::PIN::ten},      // mosi
         {embot::hw::GPIO::PORT::C, embot::hw::GPIO::PIN::ten},      // sckl
         {embot::hw::GPIO::PORT::A, embot::hw::GPIO::PIN::four}      // ssel
     } };
@@ -127,14 +143,15 @@ namespace embot::hw::spi::bsp {
     
     constexpr BSP thebsp {        
         // maskofsupported
-        mask::pos2mask<uint32_t>(SPI::one) | mask::pos2mask<uint32_t>(SPI::two) | mask::pos2mask<uint32_t>(SPI::three) |
-        mask::pos2mask<uint32_t>(SPI::five) | mask::pos2mask<uint32_t>(SPI::six),        
+//        mask::pos2mask<uint32_t>(SPI::one) | mask::pos2mask<uint32_t>(SPI::two) | 
+        mask::pos2mask<uint32_t>(SPI::three),        
         // properties
         {{
-            &spi1p, &spi2p, &spi3p,     // used by encoders
+            nullptr, nullptr,       // used by encoders
+            &spi3p,                 // used by eeprom and eth
             nullptr, 
-            &spi5p,                     // used by eth
-            &spi6p                      // used by eeprom            
+            nullptr,                     
+            nullptr                               
         }}        
     };
  
@@ -261,40 +278,61 @@ namespace embot::hw::spi::bsp {
     
     
     bool BSP::init(embot::hw::SPI h, const Config &config) const
-    {        
+    {   
+
         switch(h)
         {
             case SPI::one:
             case SPI::two:
-            case SPI::three:
             {
-                // we are on J5: enable the port x1
-                s_J5_SPIpinout(h, true); 
+                // they are encoders: check if we need to configure the pinout.
+                // s_J5_SPIpinout(h, true); 
                 // and call SPI init              
                 s_SPIinit(h, config);                
             } break;
             
-            case SPI::four:
+            case SPI::three:
             {
-                // nothing to do
-            } break;
-            
-            case SPI::five:
-            {
-                // eth switch
-                s_SPIinit(h, config); 
-                // the s_SPI5init() differs from the s_SPIinit() only for two values that are not (yet) parameters
-                // however, it seems that the link-up-down is detected also w/ the params in s_SPIinit()
-            } break;
-            
-            case SPI::six:
-            {
-                // eeprom: just call SPI init
+                // eeprom and eth switch
                 s_SPIinit(h, config);
-            } break;
+            } break;           
             
             default: {} break;                            
         }
+        
+//        switch(h)
+//        {
+//            case SPI::one:
+//            case SPI::two:
+//            case SPI::three:
+//            {
+//                // we are on J5: enable the port x1
+//                s_J5_SPIpinout(h, true); 
+//                // and call SPI init              
+//                s_SPIinit(h, config);                
+//            } break;
+//            
+//            case SPI::four:
+//            {
+//                // nothing to do
+//            } break;
+//            
+//            case SPI::five:
+//            {
+//                // eth switch
+//                s_SPIinit(h, config); 
+//                // the s_SPI5init() differs from the s_SPIinit() only for two values that are not (yet) parameters
+//                // however, it seems that the link-up-down is detected also w/ the params in s_SPIinit()
+//            } break;
+//            
+//            case SPI::six:
+//            {
+//                // eeprom: just call SPI init
+//                s_SPIinit(h, config);
+//            } break;
+//            
+//            default: {} break;                            
+//        }
         
         return true; 
     }
@@ -305,31 +343,20 @@ namespace embot::hw::spi::bsp {
         {
             case SPI::one:
             case SPI::two:
-            case SPI::three:
             {
                 // call SPI deinit              
                 s_SPIdeinit(h);  
-                // we are on J5: disable port x1
-                s_J5_SPIpinout(h, false);                
+                // we are on J5: disable port ????
+//                s_J5_SPIpinout(h, false);                
             } break;
             
-            case SPI::four:
+            case SPI::three:
             {
-                // nothing to do
-            } break;
-            
-            case SPI::five:
-            {
-                // ETH ...
+                // eeprom and eth switch
                 s_SPIdeinit(h);
             } break;
             
-            case SPI::six:
-            {
-                // eeprom: just call SPI deinit
-                s_SPIdeinit(h);
-            } break;
-            
+
             default: {} break;                            
         }        
         
@@ -367,6 +394,9 @@ extern "C"
       
       if(spiHandle->Instance == SPI1)
       {
+          
+          #warning CHECK SPI1
+          
         PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI1;
         PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_CLKP;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
@@ -413,6 +443,8 @@ extern "C"
       }
       else if(spiHandle->Instance == SPI2)
       {
+          #warning CHECK SPI2
+          
         PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
         PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_CLKP;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
@@ -493,118 +525,118 @@ extern "C"
         HAL_NVIC_SetPriority(SPI3_IRQn, 0, 0);
         HAL_NVIC_EnableIRQ(SPI3_IRQn);          
       }        
-      else if(spiHandle->Instance==SPI5)
-      {
-         
-      /* USER CODE BEGIN SPI5_MspInit 0 */
+//      else if(spiHandle->Instance==SPI5)
+//      {
+//         
+//      /* USER CODE BEGIN SPI5_MspInit 0 */
 
-      /* USER CODE END SPI5_MspInit 0 */
-      /** Initializes the peripherals clock
-      */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI5;
-        PeriphClkInitStruct.Spi45ClockSelection = RCC_SPI45CLKSOURCE_D2PCLK1;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-          Error_Handler("SPI5");
-        }
+//      /* USER CODE END SPI5_MspInit 0 */
+//      /** Initializes the peripherals clock
+//      */
+//        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI5;
+//        PeriphClkInitStruct.Spi45ClockSelection = RCC_SPI45CLKSOURCE_D2PCLK1;
+//        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+//        {
+//          Error_Handler("SPI5");
+//        }
 
-        /* SPI5 clock enable */
-        __HAL_RCC_SPI5_CLK_ENABLE();
+//        /* SPI5 clock enable */
+//        __HAL_RCC_SPI5_CLK_ENABLE();
 
-        __HAL_RCC_GPIOF_CLK_ENABLE();
-        __HAL_RCC_GPIOH_CLK_ENABLE();
-        /**SPI5 GPIO Configuration
-        PF8     ------> SPI5_MISO
-        PF11     ------> SPI5_MOSI
-        PH6     ------> SPI5_SCK
-        */
-        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::MISO); // ETH_MISO_Pin;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
-        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::MISO), &GPIO_InitStruct); // ETH_MISO_GPIO_Port
+//        __HAL_RCC_GPIOF_CLK_ENABLE();
+//        __HAL_RCC_GPIOH_CLK_ENABLE();
+//        /**SPI5 GPIO Configuration
+//        PF8     ------> SPI5_MISO
+//        PF11     ------> SPI5_MOSI
+//        PH6     ------> SPI5_SCK
+//        */
+//        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::MISO); // ETH_MISO_Pin;
+//        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//        GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+//        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//        GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+//        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::MISO), &GPIO_InitStruct); // ETH_MISO_GPIO_Port
 
-        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::MOSI); // ETH_MOSI_Pin;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_PULLUP;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
-        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::MOSI), &GPIO_InitStruct); // ETH_MOSI_GPIO_Port
+//        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::MOSI); // ETH_MOSI_Pin;
+//        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//        GPIO_InitStruct.Pull = GPIO_PULLUP;
+//        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//        GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+//        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::MOSI), &GPIO_InitStruct); // ETH_MOSI_GPIO_Port
 
-        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::SCLK); // ETH_SCLK_Pin;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_NOPULL;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
-        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::SCLK), &GPIO_InitStruct); // ETH_SCLK_GPIO_Port
+//        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::SCLK); // ETH_SCLK_Pin;
+//        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//        GPIO_InitStruct.Pull = GPIO_NOPULL;
+//        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//        GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+//        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::SCLK), &GPIO_InitStruct); // ETH_SCLK_GPIO_Port
 
-        /* SPI5 interrupt Init */
-        HAL_NVIC_SetPriority(SPI5_IRQn, 0, 0);
-        HAL_NVIC_EnableIRQ(SPI5_IRQn);
-      /* USER CODE BEGIN SPI5_MspInit 1 */
+//        /* SPI5 interrupt Init */
+//        HAL_NVIC_SetPriority(SPI5_IRQn, 0, 0);
+//        HAL_NVIC_EnableIRQ(SPI5_IRQn);
+//      /* USER CODE BEGIN SPI5_MspInit 1 */
 
-      /* USER CODE END SPI5_MspInit 1 */
-    
-      }
-      else if(spiHandle->Instance==SPI6)
-      {
-           
-      /* USER CODE BEGIN SPI6_MspInit 0 */
+//      /* USER CODE END SPI5_MspInit 1 */
+//    
+//      }
+//      else if(spiHandle->Instance==SPI6)
+//      {
+//           
+//      /* USER CODE BEGIN SPI6_MspInit 0 */
 
-      /* USER CODE END SPI6_MspInit 0 */
+//      /* USER CODE END SPI6_MspInit 0 */
 
-      /** Initializes the peripherals clock
-      */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI6;
-        PeriphClkInitStruct.Spi6ClockSelection = RCC_SPI6CLKSOURCE_D3PCLK1;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-          Error_Handler("HAL_SPI_MspInit(SPI6)");
-        }
+//      /** Initializes the peripherals clock
+//      */
+//        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI6;
+//        PeriphClkInitStruct.Spi6ClockSelection = RCC_SPI6CLKSOURCE_D3PCLK1;
+//        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+//        {
+//          Error_Handler("HAL_SPI_MspInit(SPI6)");
+//        }
 
-        /* SPI6 clock enable */
-        __HAL_RCC_SPI6_CLK_ENABLE();
+//        /* SPI6 clock enable */
+//        __HAL_RCC_SPI6_CLK_ENABLE();
 
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-        __HAL_RCC_GPIOG_CLK_ENABLE();
-        /**SPI6 GPIO Configuration
-        PB4 (NJTRST)     ------> SPI6_MISO
-        PG13     ------> SPI6_SCK
-        PG14     ------> SPI6_MOSI
-        */
-        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::MISO); //EE_MISO_Pin;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = extcfg->pull(embot::hw::spi::Signal::MISO, GPIO_NOPULL);
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF8_SPI6;
-        //HAL_GPIO_Init(EE_MISO_GPIO_Port, &GPIO_InitStruct);
-        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::MISO), &GPIO_InitStruct); // EE_MISO_GPIO_Port
+//        __HAL_RCC_GPIOB_CLK_ENABLE();
+//        __HAL_RCC_GPIOG_CLK_ENABLE();
+//        /**SPI6 GPIO Configuration
+//        PB4 (NJTRST)     ------> SPI6_MISO
+//        PG13     ------> SPI6_SCK
+//        PG14     ------> SPI6_MOSI
+//        */
+//        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::MISO); //EE_MISO_Pin;
+//        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//        GPIO_InitStruct.Pull = extcfg->pull(embot::hw::spi::Signal::MISO, GPIO_NOPULL);
+//        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//        GPIO_InitStruct.Alternate = GPIO_AF8_SPI6;
+//        //HAL_GPIO_Init(EE_MISO_GPIO_Port, &GPIO_InitStruct);
+//        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::MISO), &GPIO_InitStruct); // EE_MISO_GPIO_Port
 
-        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::MOSI);//EE_MOSI_Pin;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = extcfg->pull(embot::hw::spi::Signal::MOSI, GPIO_NOPULL);
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF5_SPI6;
-        //HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::MOSI), &GPIO_InitStruct);
-        
-        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::SCLK); //EE_SCLK_Pin;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = extcfg->pull(embot::hw::spi::Signal::SCLK, GPIO_NOPULL);;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF5_SPI6;
-        //HAL_GPIO_Init(GPIOG, &GPIO_InitStruct); 
-        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::SCLK), &GPIO_InitStruct);        
+//        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::MOSI);//EE_MOSI_Pin;
+//        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//        GPIO_InitStruct.Pull = extcfg->pull(embot::hw::spi::Signal::MOSI, GPIO_NOPULL);
+//        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//        GPIO_InitStruct.Alternate = GPIO_AF5_SPI6;
+//        //HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+//        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::MOSI), &GPIO_InitStruct);
+//        
+//        GPIO_InitStruct.Pin = extcfg->pin(embot::hw::spi::Signal::SCLK); //EE_SCLK_Pin;
+//        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//        GPIO_InitStruct.Pull = extcfg->pull(embot::hw::spi::Signal::SCLK, GPIO_NOPULL);;
+//        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//        GPIO_InitStruct.Alternate = GPIO_AF5_SPI6;
+//        //HAL_GPIO_Init(GPIOG, &GPIO_InitStruct); 
+//        HAL_GPIO_Init(extcfg->port(embot::hw::spi::Signal::SCLK), &GPIO_InitStruct);        
 
-        /* SPI6 interrupt Init */
-        HAL_NVIC_SetPriority(SPI6_IRQn, 0, 0);
-        HAL_NVIC_EnableIRQ(SPI6_IRQn);
-      /* USER CODE BEGIN SPI6_MspInit 1 */
+//        /* SPI6 interrupt Init */
+//        HAL_NVIC_SetPriority(SPI6_IRQn, 0, 0);
+//        HAL_NVIC_EnableIRQ(SPI6_IRQn);
+//      /* USER CODE BEGIN SPI6_MspInit 1 */
 
-      /* USER CODE END SPI6_MspInit 1 */
-     
-      }
+//      /* USER CODE END SPI6_MspInit 1 */
+//     
+//      }
     }    
 
 
@@ -643,26 +675,26 @@ extern "C"
 
             HAL_NVIC_DisableIRQ(SPI3_IRQn);            
         }        
-        else if(spiHandle->Instance==SPI5)
-        {         
-            __HAL_RCC_SPI5_CLK_DISABLE();
+//        else if(spiHandle->Instance==SPI5)
+//        {         
+//            __HAL_RCC_SPI5_CLK_DISABLE();
 
-            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::MISO));
-            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::MOSI));
-            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::SCLK));
-          
-            HAL_NVIC_DisableIRQ(SPI5_IRQn);    
-      }
-      else if(spiHandle->Instance==SPI6)
-      {     
-            __HAL_RCC_SPI6_CLK_DISABLE();
+//            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::MISO));
+//            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::MOSI));
+//            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::SCLK));
+//          
+//            HAL_NVIC_DisableIRQ(SPI5_IRQn);    
+//      }
+//      else if(spiHandle->Instance==SPI6)
+//      {     
+//            __HAL_RCC_SPI6_CLK_DISABLE();
 
-            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::MISO));
-            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::MOSI));
-            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::SCLK));
-                  
-            HAL_NVIC_DisableIRQ(SPI6_IRQn);   
-      }
+//            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::MISO));
+//            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::MOSI));
+//            embot::hw::gpio::deinit(extcfg->gpio(embot::hw::spi::Signal::SCLK));
+//                  
+//            HAL_NVIC_DisableIRQ(SPI6_IRQn);   
+//      }
     }
     
 }

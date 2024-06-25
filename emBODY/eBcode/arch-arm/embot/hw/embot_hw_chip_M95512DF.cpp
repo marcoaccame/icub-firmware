@@ -171,7 +171,10 @@ private:
     bool writeinpage(ADR adr, const embot::core::Data &data);
     bool initpincontrol();
     bool deinitpincontrol();
-};    
+};  
+
+#warning add possibility to avoid init and use of nHOLD and nW because the amcfoc does not use them
+// and nW is 0V and nHOLD is high 
 
 bool embot::hw::chip::M95512DF::Impl::initpincontrol()
 {

@@ -38,7 +38,7 @@ using namespace embot::core::binary;
 // - configuration of peripherals and chips. it is done board by board. it contains a check vs correct STM32HAL_BOARD_*
 // --------------------------------------------------------------------------------------------------------------------
 
-#include "embot_hw_bsp_amc2cm4_config.h"
+#include "embot_hw_bsp_config.h"
 
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -65,13 +65,20 @@ namespace embot::hw::eeprom {
     
 }
 
+//    {EEPR_nSEL_GPIO_Port, EEPR_nSEL_Pin},   /* EEP_DEV */
+//    {ETH_nSEL_GPIO_Port, ETH_nSEL_Pin},     /* PHY_DEV */
+//#define ETH_nSEL_Pin GPIO_PIN_4
+//#define ETH_nSEL_GPIO_Port GPIOA
+//#define EEPR_nSEL_Pin GPIO_PIN_0
+//#define EEPR_nSEL_GPIO_Port GPIOG
+
 #elif defined(EMBOT_ENABLE_hw_eeprom)
 
 namespace embot::hw::eeprom {
            
     constexpr PROP ee1p = { embot::hw::eeprom::Type::chipM95512DF, 
                             {   
-                                embot::hw::SPI::six, 
+                                embot::hw::SPI::three, 
                                 { 
                                     embot::hw::spi::Prescaler::eight, 
                                     embot::hw::spi::DataSize::eight, 
@@ -79,9 +86,11 @@ namespace embot::hw::eeprom {
                                     { {embot::hw::gpio::Pull::nopull, embot::hw::gpio::Pull::nopull, embot::hw::gpio::Pull::nopull, embot::hw::gpio::Pull::none} }
                                 },
                                 {
-                                    {embot::hw::GPIO::PORT::G, embot::hw::GPIO::PIN::eight},    // nS
-                                    {embot::hw::GPIO::PORT::F, embot::hw::GPIO::PIN::twelve},   // nW
-                                    {embot::hw::GPIO::PORT::F, embot::hw::GPIO::PIN::thirteen}, // nHOLD
+                                    {embot::hw::GPIO::PORT::G, embot::hw::GPIO::PIN::zero},    // nS
+                                    {}, // nW ?? schematics does not show
+                                    {}, // it is always high
+//                                    {embot::hw::GPIO::PORT::F, embot::hw::GPIO::PIN::twelve},   // nW
+//                                    {embot::hw::GPIO::PORT::F, embot::hw::GPIO::PIN::thirteen}, // nHOLD
                                     {
                                         embot::hw::gpio::Mode::OUTPUTpushpull,
                                         embot::hw::gpio::Pull::nopull,
